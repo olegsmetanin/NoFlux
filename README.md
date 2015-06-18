@@ -7,7 +7,7 @@ Repository extends EventEmitter, StateSetter {
     if (!this.state.noun) {
       httprequest.exec().then(noun => this.setState({noun: noun}));
     }
-    return noun;
+    return this.state.noun;
   }
 }
 
