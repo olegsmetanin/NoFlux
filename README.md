@@ -3,17 +3,13 @@ NoFlux Architecture
 
 ```javascript
 Repository extends EventEmitter, StateSetter {
-  async noun() {
-    if (this.state.noun) {
-      return this.state.noun;
-    } else {
-      var noun = await httprequest.exec();
-      this.setState({noun: noun});
-      return noun;
+  noun() {
+    if (!this.state.noun) {
+      httprequest.exec().then(noun => this.setState({noun: noun}));
     }
+    return noun;
   }
 }
-
 
 Action {
   async action() {
@@ -31,13 +27,13 @@ class ReactComponent extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      data: context.cache.get()
+      data: context.cache.get(),
+      me: context.userRepository.me()
     }
   }
 
   componentDidMount() {
     this.userRepository.addEventListener('change', this.getFromUserRepository);
-    this.userRepository.me().then(this.getFromUserRepository);
   }
 
   componentWillMount() {
